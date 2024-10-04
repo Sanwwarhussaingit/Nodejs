@@ -4,13 +4,20 @@ const mongoose = require('mongoose')
 require('dotenv').config();
 
 //define the mongo db cannection url
-const  hotelsURL = process.env.MONGODBURL
-//connect to the mongodb server and log connection status
+
+const  hotelsURL= process.env.MONGODBURL 
+ 
+
+
+
+//connect to the mongodb server and log connection statusx
+
 mongoose.connect(hotelsURL,{
     useNewUrlParser: true, 
     useUnifiedTopology: true
     // useFindAndModify: false
 })
+
 //get the default connection
 const db = mongoose.connection;
 //on connection event
@@ -26,3 +33,4 @@ db.on('disconnected',()=>{
     log('MongoDB disconnected')
 })
 module.exports = db;
+ 
