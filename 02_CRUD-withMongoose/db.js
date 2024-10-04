@@ -1,12 +1,13 @@
 const { log } = require("console")
 
 const mongoose = require('mongoose')
+require('dotenv').config();
 
 //define the mongo db cannection url
-const hotelsURL= 'mongodb://localhost:27017/hotels'
+const  hotelsURL = process.env.MONGODBURL
 //connect to the mongodb server and log connection status
 mongoose.connect(hotelsURL,{
-    useNewUrlParser: true,
+    useNewUrlParser: true, 
     useUnifiedTopology: true
     // useFindAndModify: false
 })
