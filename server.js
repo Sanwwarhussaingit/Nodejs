@@ -16,7 +16,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT
 
 //user define use end point
 app.use('/person',personRoutes)
