@@ -17,6 +17,9 @@ mongoose.connect(hotelsURL,{
     // useFindAndModify: false
 })
 
+
+
+
 //get the default connection
 const db = mongoose.connection;
 //on connection event

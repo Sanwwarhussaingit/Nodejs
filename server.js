@@ -19,6 +19,7 @@ const PORT = process.env.PORT
 
 //user define use end point
 app.use('/person',personRoutes)
+
 app.use('/menu',menuRoutes)
 
 const db = require("./db");
