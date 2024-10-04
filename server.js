@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 require('dotenv').config();
 
-
 //user define require
 const personRoutes = require("./routes/personRoutes")
 const menuRoutes = require("./routes/menuRoutes")

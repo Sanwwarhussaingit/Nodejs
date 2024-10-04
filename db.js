@@ -9,7 +9,6 @@ const  hotelsURL= process.env.MONGODBURL
  
 
 
-
 //connect to the mongodb server and log connection statusx
 
 mongoose.connect(hotelsURL,{
