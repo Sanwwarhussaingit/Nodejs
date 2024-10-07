@@ -5,9 +5,8 @@ require('dotenv').config();
 
 //define the mongo db cannection url
 
-const  hotelsURL= process.env.MONGODBURL 
+const  hotelsURL= process.env.MONGODBURL_LOCAL
  
-
 
 //connect to the mongodb server and log connection statusx
 
@@ -16,9 +15,6 @@ mongoose.connect(hotelsURL,{
     useUnifiedTopology: true
     // useFindAndModify: false
 })
-
-
-
 
 //get the default connection
 const db = mongoose.connection;

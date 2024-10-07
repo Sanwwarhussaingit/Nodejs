@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -35,9 +36,56 @@ const personSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    username:{
+        type: String,
+        required: true,
+        unique: true,
 
+    },
+    password:{
+        type: String,
+        required: true,
+        unique: true
+    }
+
+});
+
+// hash password before saving to database
+personSchema.pre('save',async function(next){
+    const person = this;
+    if(!person.isModified('password')) return next();
+
+    try{
+        //generate hash pass
+        const salt = await bcrypt.genSalt(10);
+        //hash password
+        // const hashedPassword = await bcrypt.hashPassword(person.password, salt);
+        const hashedPassword = await bcrypt.hash(person.password, salt);
+        //set hashed password to password field
+        person.password = hashedPassword;
+        //continue to save the document
+        next();
+    }catch(err){    
+        return next(err)
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 })
 
+
+personSchema.methods.comparePassword = async function(candidatePassword){
+    try{
+        // return await bcrypt.compare(candidatePassword, this.password);
+   
+        const isMatch = await bcrypt.compare(candidatePassword, this.password)
+
+        // console.log('Candidate Password:', candidatePassword);
+        // console.log('Hashed Password:', password);
+
+        return isMatch;
+    }catch(err){
+        throw err;
+    }
+ 
+}
 //create person model
 const Person = mongoose.model('Person',personSchema);
 

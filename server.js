@@ -8,6 +8,8 @@ require('dotenv').config();
 //user define require
 const personRoutes = require("./routes/personRoutes")
 const menuRoutes = require("./routes/menuRoutes")
+const db = require("./db");
+const passport = require('./auth')
 
 
 //pre defien use
@@ -15,17 +17,20 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use(passport.initialize())
+const localAuthMiddleware = passport.authenticate('local',{session:false})
 const PORT = process.env.PORT
+ 
+ 
 
 //user define use end point
-app.use('/person',personRoutes)
-
+app.use('/person',localAuthMiddleware,personRoutes)
 app.use('/menu',menuRoutes)
 
-const db = require("./db");
 
 
-app.get("/", (req, res) => {
+
+app.get("/",(req, res) => {
   res.send("Hello World!");
 });
 
