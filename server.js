@@ -26,7 +26,7 @@ const localAuthMiddleware = passport.authenticate('local',{session:false})
 
 //user define use end point
 const PORT = process.env.PORT
-app.use('/person',localAuthMiddleware,personRoutes)
+app.use('/person',personRoutes)
 app.use('/menu',menuRoutes)
 
 

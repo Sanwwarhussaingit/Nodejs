@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Person = require("../models/Person");
 
-router.post("/", async (req, res) => {
+const { jwtAuthMiddleware, generateToken } = require("../jwt");
+
+router.post("/signup", async (req, res) => {
   try {
     const data = req.body; // assuming the request body contains the person data
 
@@ -13,15 +15,70 @@ router.post("/", async (req, res) => {
     const response = await newPerson.save();
 
     console.log("Data saved");
-    res.status(200).json(response);
+
+    const payload = {
+      id: response.id,
+      username: response.username,
+    };
+    const token = generateToken(payload);
+
+    console.log(JSON.stringify(payload));
+    console.log("token is: ", token);
+
+    res.status(200).json({ response, token });
   } catch (error) {
     console.error("Error saving person:", error);
     res.status(500).json({ error: "Failed to save person" });
   }
 });
 
+//login user
+router.post("/login", async function (req, res) {
+  try {
+    const { username, password } = req.body;
+    //find user username and password
+    const user = await Person.findOne({ username: username });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+    //generate token
+    const payload = {
+      id: user.id,
+      username: user.username,
+    };
+    const token = generateToken(payload);
+    //return token
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    res.status(500).json({ error: "Failed to log in user" });
+  }
+});
+
+
+// get route to get a person by id
+router.get('/profile',jwtAuthMiddleware, async (req,res) =>{
+  try {
+    
+    const userData = req.user;
+    console.log("User Data", userData);
+    const userId = userData.id;
+    const user = await Person.findById(userId);
+    res.status(200).json({user:user})
+  } catch (error) {
+
+    console.error("Error logging in user:", error);
+    res.status(500).json({ error: "Failed to log in user" });
+    
+  }
+})
+
+
+
+
 // get route to get all persons
-router.get("/", async (req, res) => {
+router.get("/",jwtAuthMiddleware, async (req, res) => {
   try {
     const response = await Person.find({});
     res.status(200).json(response);

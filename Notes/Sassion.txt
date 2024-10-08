@@ -1,0 +1,39 @@
+// To set up JWT authentication, we need to install the jsonwebtoken package first.
+// You can do this by running: npm install jsonwebtoken
+
+const jwt = require('jsonwebtoken');
+
+// Secret key for signing the JWT
+const SECRET_KEY = 'your_secret_key'; // Change this to a strong secret key
+
+// Function to generate a JWT token
+const generateToken = (user) => {
+    // Create a token with user information and an expiration time
+    return jwt.sign({ id: user._id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+};
+
+// Middleware to authenticate JWT token
+const authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
+    if (!token) return res.sendStatus(401); // Unauthorized if no token
+    
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403); // Forbidden if token is invalid
+        req.user = user; // Attach user info to request
+        next(); // Proceed to the next middleware or route handler
+    });
+};
+
+// Example usage in an Express route
+// app.post('/login', async (req, res) => {
+//     const { username, password } = req.body;
+//     // Authenticate user (this part should be implemented)
+//     const user = await authenticateUser(username, password); // Assume this function exists
+//     if (user) {
+//         const token = generateToken(user); // Generate token
+//         res.json({ token }); // Send token to client
+//     } else {
+//         res.status(401).send('Invalid credentials');
+//     }
+// });
+
