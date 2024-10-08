@@ -50,11 +50,13 @@ const personSchema = new mongoose.Schema({
 
 });
 
+
 // hash password before saving to database
 personSchema.pre('save',async function(next){
     const person = this;
-    if(!person.isModified('password')) return next();
 
+    if(!person.isModified('password')) return next();
+    //generate salt
     try{
         //generate hash pass
         const salt = await bcrypt.genSalt(10);
@@ -69,24 +71,15 @@ personSchema.pre('save',async function(next){
         return next(err)
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 })
-
-
 personSchema.methods.comparePassword = async function(candidatePassword){
     try{
         // return await bcrypt.compare(candidatePassword, this.password);
-   
         const isMatch = await bcrypt.compare(candidatePassword, this.password)
-
-        // console.log('Candidate Password:', candidatePassword);
-        // console.log('Hashed Password:', password);
-
         return isMatch;
     }catch(err){
         throw err;
     }
- 
 }
 //create person model
 const Person = mongoose.model('Person',personSchema);
-
 module.exports = Person;

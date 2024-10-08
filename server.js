@@ -17,13 +17,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+
+//passport
 app.use(passport.initialize())
 const localAuthMiddleware = passport.authenticate('local',{session:false})
-const PORT = process.env.PORT
- 
- 
+
+
 
 //user define use end point
+const PORT = process.env.PORT
 app.use('/person',localAuthMiddleware,personRoutes)
 app.use('/menu',menuRoutes)
 
